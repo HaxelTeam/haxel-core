@@ -18,7 +18,7 @@ package haxel.core;
 import haxe.unit.TestRunner;
 
 /**
-* A test suite for Toxic framwork.
+* A test suite for Haxel framwork.
 *
 * @author Dmitry Razumovskiy <razumovskiy@gmail.com>
 **/

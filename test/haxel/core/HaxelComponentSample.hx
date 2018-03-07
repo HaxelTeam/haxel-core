@@ -15,7 +15,7 @@
  */
 package haxel.core;
 
-class ToxicComponentSample extends ThirdPartySample implements IToxicComponent {
+class HaxelComponentSample extends ThirdPartySample implements IHaxelComponent {
 
     public var initPassed:Bool;
 

@@ -16,7 +16,7 @@
 package haxel.core.impl;
 
 /**
-* A manager which manages events between scopes inside a Toxic application.
+* A manager which manages events between scopes inside a Haxel application.
 *
 * @author Dmitry Razumovskiy <razumovskiy@gmail.com>
 **/
@@ -32,14 +32,14 @@ class ScopeManagerInternal {
     private var acquireCount: Int = 0;
 
     /**
-    * A config of a Toxic applicaiton associated with this manager.
+    * A config of a Haxel applicaiton associated with this manager.
     **/
     private var config: Config;
 
     /**
     * Constructs an instance.
     *
-    * @param config a config of an Toxic application.
+    * @param config a config of an Haxel application.
     **/
     public function new(config: Config) {
         this.config = config;
@@ -47,7 +47,7 @@ class ScopeManagerInternal {
     }
 
     /**
-    * @return a config of a Toxic applicaiton associated with this manager.
+    * @return a config of a Haxel applicaiton associated with this manager.
     **/
     public function getConfig(): Config {
         return this.config;

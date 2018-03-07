@@ -15,7 +15,7 @@
  */
 package haxel.core.impl;
 
-import haxel.core.macro.ToxicMacro;
+import haxel.core.macro.HaxelMacro;
 
 /**
 * A scope which can fill himself from contexts registered in a config by the scope key.
@@ -26,7 +26,7 @@ class Scope extends BaseScope {
     /**
     * A list of contexts which fill this scope.
     **/
-    private var contexts:Array<IToxicContext>;
+    private var contexts:Array<IHaxelContext>;
 
     /**
     * Constructs an instance of a scope.
@@ -51,24 +51,24 @@ class Scope extends BaseScope {
     /**
     * Initialises contexts instances and process intialisation of this scope.
     **/
-    private function processInitialization(cotextClasses:Array<Class<IToxicContext>>):Void {
+    private function processInitialization(cotextClasses:Array<Class<IHaxelContext>>):Void {
         for (ctxClass in cotextClasses) {
             contexts.push(Type.createInstance(ctxClass, []));
         }
         for (ctx in contexts) {
-            ToxicMacro.toxicCall(ctx.constructComponents(this));
+            HaxelMacro.haxelCall(ctx.constructComponents(this));
         }
         for (ctx in contexts) {
-            ToxicMacro.toxicCall(ctx.prepareComponents(this));
+            HaxelMacro.haxelCall(ctx.prepareComponents(this));
         }
         for (ctx in contexts) {
-            ToxicMacro.toxicCall(ctx.initComponents(getScopeKey()));
+            HaxelMacro.haxelCall(ctx.initComponents(getScopeKey()));
         }
     }
 
     override function doRelease() {
         for (ctx in contexts) {
-            ToxicMacro.toxicCall(ctx.releaseComponents());
+            HaxelMacro.haxelCall(ctx.releaseComponents());
         }
     }
 }

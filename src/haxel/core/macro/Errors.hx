@@ -33,7 +33,7 @@ class Errors {
 
     static var INVALID_CONTEXT_CONFIG:String = "Invalid context config declaration. The context should be declared with a @:Config(components...) metadata";
 
-    static var INVALID_TOXIC_CALL_DECLARATION:String = "Invalid Toxic call declaration. The declaration should be in form 'some.toxicFun(params)'";
+    static var INVALID_HAXEL_CALL_DECLARATION:String = "Invalid Haxel call declaration. The declaration should be in form 'some.haxelFun(params)'";
 
     static var INVALID_CONFIG_FLAG:String = "Invalid configuration flag definition. It should be defined in key = value form";
 
@@ -55,8 +55,8 @@ class Errors {
         Context.error(INVALID_CONTEXT_CONFIG, pos);
     }
 
-    public static function invalidToxicCallDeclaration(pos: Position) {
-        Context.error(INVALID_TOXIC_CALL_DECLARATION, pos);
+    public static function invalidHaxelCallDeclaration(pos: Position) {
+        Context.error(INVALID_HAXEL_CALL_DECLARATION, pos);
     }
 
     public static function invalidConfigFlag(pos:Position) {

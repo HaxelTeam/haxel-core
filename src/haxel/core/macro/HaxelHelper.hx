@@ -42,18 +42,18 @@ typedef EnumDeclarationDef = {
 }
 
 /**
-* A halper for Toxic code generators.
+* A halper for Haxel code generators.
 *
 * @author Dmitry Razumovskiy <razumovskiy@gmail.com>
 **/
-class ToxicHelper {
+class HaxelHelper {
     /**
-    * Builds a Toxic name from a name.
+    * Builds a Haxel name from a name.
     *
     * @param name an original name.
-    * @return a Toxic name string.
+    * @return a Haxel name string.
     **/
-    public static function getToxicName(name:String):String {
+    public static function getHaxelName(name:String):String {
         return "u2620_" + name;
     }
 
@@ -91,13 +91,13 @@ class ToxicHelper {
     }
 
     /**
-    * Gets a type path for a Toxic library definition.
+    * Gets a type path for a Haxel library definition.
     *
     * @param name a name of a module or a definition.
     * @param sub  a name of definition in the module.
     * @return a type path to a definition.
     **/
-    public static function tToxic(name:String, ?sub:Null<String>):ComplexType {
+    public static function tHaxel(name:String, ?sub:Null<String>):ComplexType {
         return TPath({sub: sub, params:[], pack:["haxel", "core"], name:name });
     }
 
@@ -246,18 +246,18 @@ class ToxicHelper {
     }
 
     /**
-    * Builds an expression which calls a super Toxic method of a class.
+    * Builds an expression which calls a super Haxel method of a class.
     *
     * @param name      the original name of a method to call.
     * @param args      an array of names of a super method.
     * @param targetPos the position of an expression definition.
     **/
-    public static function superToxicCall(name:String, args:Array<String>, ?targetPos:Position):Expr {
+    public static function superHaxelCall(name:String, args:Array<String>, ?targetPos:Position):Expr {
         if (targetPos == null) {
             targetPos = pos();
         }
         var superExpr = e(EConst(CIdent("super")), targetPos);
-        var methodExpr = e(EField(superExpr, getToxicName(name)), targetPos);
+        var methodExpr = e(EField(superExpr, getHaxelName(name)), targetPos);
         var argExprs = [];
         for (arg in args) {
             argExprs.push(e(EConst(CIdent(arg)), targetPos));

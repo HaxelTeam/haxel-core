@@ -17,83 +17,83 @@ package haxel.core.macro;
 
 #if macro
 import haxe.macro.Expr;
-import haxel.core.macro.ToxicHelper.e;
+import haxel.core.macro.HaxelHelper.e;
 #end
 
 /**
-* A set of function which are used to generaate a Toxic related code in macro mode.
+* A set of function which are used to generaate a Haxel related code in macro mode.
 *
 * @author Dmitry Razumovskiy <razumovskiy@gmail.com>
 **/
-class ToxicMacro {
+class HaxelMacro {
     /**
-    * A macro genrates body of the {@link IToxicComponent} interface.
+    * A macro genrates body of the {@link IHaxelComponent} interface.
     **/
-    macro public static function buildIToxicComponent():Array<Field> {
+    macro public static function buildIHaxelComponent():Array<Field> {
         return [
-            ToxicComponentCodeGen.buildAttachFun(),
-            ToxicComponentCodeGen.buildInitFun(),
-            ToxicComponentCodeGen.buildDetachFun(),
-            ToxicComponentCodeGen.buildReleaseFun()
+            HaxelComponentCodeGen.buildAttachFun(),
+            HaxelComponentCodeGen.buildInitFun(),
+            HaxelComponentCodeGen.buildDetachFun(),
+            HaxelComponentCodeGen.buildReleaseFun()
         ];
     }
 
     /**
-    * A macro genrates an implemetation of the {@link IToxicComponent} interface.
+    * A macro genrates an implemetation of the {@link IHaxelComponent} interface.
     **/
-    macro public static function prepareToxicComponent():Array<Field> {
-        var generator = new ToxicComponentCodeGen();
+    macro public static function prepareHaxelComponent():Array<Field> {
+        var generator = new HaxelComponentCodeGen();
         return generator.generate();
     }
 
     /**
-    * A macro genrates body of the {@link IToxicContext} interface.
+    * A macro genrates body of the {@link IHaxelContext} interface.
     **/
-    macro public static function buildIToxicContext():Array<Field> {
+    macro public static function buildIHaxelContext():Array<Field> {
         return [
-            ToxicContextCodeGen.buildConstructFun(),
-            ToxicContextCodeGen.buildPrepareFun(),
-            ToxicContextCodeGen.buildInitFun(),
-            ToxicContextCodeGen.buildReleaseFun()
+            HaxelContextCodeGen.buildConstructFun(),
+            HaxelContextCodeGen.buildPrepareFun(),
+            HaxelContextCodeGen.buildInitFun(),
+            HaxelContextCodeGen.buildReleaseFun()
         ];
     }
 
     /**
-    * A macro genrates body of the {@link IToxicContext} interface.
+    * A macro genrates body of the {@link IHaxelContext} interface.
     **/
-    macro public static function prepareToxicContext():Array<Field> {
-        var generator = new ToxicContextCodeGen();
+    macro public static function prepareHaxelContext():Array<Field> {
+        var generator = new HaxelContextCodeGen();
         return generator.generate();
     }
 
     /**
-    * Transforms a normal call expression to a Toxic call expression.
+    * Transforms a normal call expression to a Haxel call expression.
     * <code>
     *  //call expression
-    *  some.toxicFun(param1, param2, ...);
-    *  //toxic call expression
-    *  some.#toxicFun(param1, param2, ...);
+    *  some.haxelFun(param1, param2, ...);
+    *  //haxel call expression
+    *  some.#haxelFun(param1, param2, ...);
     * </code>
     *
     * @param a call exprression.
-    * @return an expression which does a call with the Toxic prefix.
+    * @return an expression which does a call with the Haxel prefix.
     **/
-    macro public static function toxicCall(callExpression: Expr): Null<Expr> {
+    macro public static function haxelCall(callExpression: Expr): Null<Expr> {
         switch(callExpression.expr) {
             case ECall(fieldExpr, params):
                 switch(fieldExpr.expr) {
-                    case EField(identExpr, toxicName):
+                    case EField(identExpr, haxelName):
                         switch(identExpr.expr) {
                             case EConst(CIdent(identName)):
-                                var toxicFieldExpr = e(EField(identExpr, ToxicHelper.getToxicName(toxicName)));
-                                return e(ECall(toxicFieldExpr, params));
+                                var haxelFieldExpr = e(EField(identExpr, HaxelHelper.getHaxelName(haxelName)));
+                                return e(ECall(haxelFieldExpr, params));
                             default:
                         }
                     default:
                 }
             default:
         }
-        Errors.invalidToxicCallDeclaration(callExpression.pos);
+        Errors.invalidHaxelCallDeclaration(callExpression.pos);
         return null;
     }
 }

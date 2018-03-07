@@ -20,8 +20,8 @@ import haxe.ds.StringMap;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.TypeTools;
-import haxel.core.macro.ToxicHelper;
-import haxel.core.macro.ToxicHelper.e;
+import haxel.core.macro.HaxelHelper;
+import haxel.core.macro.HaxelHelper.e;
 
 /**
 * Defines a struture which contains a map of handlers of the specific event type.
@@ -61,16 +61,16 @@ typedef EventHandlersDef = {
 }
 
 /**
-* A code generator is used to build implementation of a Toxic component on the macro phase.
+* A code generator is used to build implementation of a Haxel component on the macro phase.
 **/
-class ToxicComponentCodeGen {
+class HaxelComponentCodeGen {
     /**
     * An index is used to generate unique names for handler functions.
     **/
     private static var handlerIndex:Int = 0;
 
     /**
-    * Builds a function which attaches a component (IToxicComponent#attach) to a scope.
+    * Builds a function which attaches a component (IHaxelComponent#attach) to a scope.
     *
     * <code>
     *   function #attach(accessor: IScopeAccessor);
@@ -80,14 +80,14 @@ class ToxicComponentCodeGen {
     * @return a field definition of the function.
     **/
     public static function buildAttachFun(?body:Expr):Field {
-        var scopeType = ToxicHelper.tToxic("IScopeAccessor");
+        var scopeType = HaxelHelper.tHaxel("IScopeAccessor");
         var scopeArg:FunctionArg = {value: null, type: scopeType, opt: false, name: "accessor"};
-        var constructFun:Function = {ret:ToxicHelper.tVoid(), params:[], expr: body, args:[scopeArg]};
-        return buildToxicFun("attach", constructFun);
+        var constructFun:Function = {ret:HaxelHelper.tVoid(), params:[], expr: body, args:[scopeArg]};
+        return buildHaxelFun("attach", constructFun);
     }
 
     /**
-    * Builds a function which initialises a component (IToxicComponent#init).
+    * Builds a function which initialises a component (IHaxelComponent#init).
     *
     * <code>
     *   function #init(initData: Dynamic);
@@ -97,13 +97,13 @@ class ToxicComponentCodeGen {
     * @return a field definition of the function.
     **/
     public static function buildInitFun(?body:Expr):Field {
-        var initDataArg:FunctionArg = {value: null, type: ToxicHelper.tDynamic(), opt: false, name: "initData"};
-        var initFun:Function = {ret:ToxicHelper.tVoid(), params:[], expr: body, args:[initDataArg]};
-        return buildToxicFun("init", initFun);
+        var initDataArg:FunctionArg = {value: null, type: HaxelHelper.tDynamic(), opt: false, name: "initData"};
+        var initFun:Function = {ret:HaxelHelper.tVoid(), params:[], expr: body, args:[initDataArg]};
+        return buildHaxelFun("init", initFun);
     }
 
     /**
-    * Builds a function which detaches a component (IToxicComponent#detach) from the attached scope.
+    * Builds a function which detaches a component (IHaxelComponent#detach) from the attached scope.
     *
     * <code>
     *   function #detach(accessor: IScopeAccessor);
@@ -113,14 +113,14 @@ class ToxicComponentCodeGen {
     * @return a field definition of the function.
     **/
     public static function buildDetachFun(?body:Expr):Field {
-        var scopeType = ToxicHelper.tToxic("IScopeAccessor");
+        var scopeType = HaxelHelper.tHaxel("IScopeAccessor");
         var scopeArg:FunctionArg = {value: null, type: scopeType, opt: false, name: "accessor"};
-        var constructFun:Function = {ret:ToxicHelper.tVoid(), params:[], expr: body, args:[scopeArg]};
-        return buildToxicFun("detach", constructFun);
+        var constructFun:Function = {ret:HaxelHelper.tVoid(), params:[], expr: body, args:[scopeArg]};
+        return buildHaxelFun("detach", constructFun);
     }
 
     /**
-    * Builds a function which releases a component (IToxicComponent#release).
+    * Builds a function which releases a component (IHaxelComponent#release).
     *
     * <code>
     *   function #release();
@@ -130,37 +130,37 @@ class ToxicComponentCodeGen {
     * @return a field definition of the function.
     **/
     public static function buildReleaseFun(?body:Expr):Field {
-        var releaseFun = {ret:ToxicHelper.tVoid(), params:[], expr: body, args:[]};
-        return buildToxicFun("release", releaseFun);
+        var releaseFun = {ret:HaxelHelper.tVoid(), params:[], expr: body, args:[]};
+        return buildHaxelFun("release", releaseFun);
     }
 
     /**
-    * Builds a Toxic method definition.
+    * Builds a Haxel method definition.
     *
     * @param name an orginal name of the method.
     * @param fun  a method function definition.
     **/
-    private static function buildToxicFun(name:String, fun:Function):Field {
-        return ToxicHelper.f(ToxicHelper.getToxicName(name), FFun(fun));
+    private static function buildHaxelFun(name:String, fun:Function):Field {
+        return HaxelHelper.f(HaxelHelper.getHaxelName(name), FFun(fun));
     }
 
     /**
-    * The body of the <code>IToxicComponent#attach</code> function.
+    * The body of the <code>IHaxelComponent#attach</code> function.
     **/
     private var attachBody:Array<Expr>;
 
     /**
-    * The body of the <code>IToxicComponent#init</code> function.
+    * The body of the <code>IHaxelComponent#init</code> function.
     **/
     private var initBody:Array<Expr>;
 
     /**
-    * The body of the <code>IToxicComponent#detach</code> function.
+    * The body of the <code>IHaxelComponent#detach</code> function.
     **/
     private var detachBody:Array<Expr>;
 
     /**
-    * The body of the <code>IToxicComponent#release</code> function.
+    * The body of the <code>IHaxelComponent#release</code> function.
     **/
     private var releaseBody:Array<Expr>;
 
@@ -185,12 +185,12 @@ class ToxicComponentCodeGen {
     **/
     public function generate():Array<Field> {
         var fields = Context.getBuildFields();
-        var overrideToxic = isExtendsToxic();
-        if (overrideToxic) {
-            attachBody = [ToxicHelper.superToxicCall("attach", ["accessor"])];
-            initBody = [ToxicHelper.superToxicCall("init", ["initData"])];
-            detachBody = [ToxicHelper.superToxicCall("detach", ["accessor"])];
-            releaseBody = [ToxicHelper.superToxicCall("release", [])];
+        var overrideHaxel = isExtendsHaxel();
+        if (overrideHaxel) {
+            attachBody = [HaxelHelper.superHaxelCall("attach", ["accessor"])];
+            initBody = [HaxelHelper.superHaxelCall("init", ["initData"])];
+            detachBody = [HaxelHelper.superHaxelCall("detach", ["accessor"])];
+            releaseBody = [HaxelHelper.superHaxelCall("release", [])];
         }
         for (field in fields) {
             for (metadata in field.meta) {
@@ -232,7 +232,7 @@ class ToxicComponentCodeGen {
                     case ":Init":
                         if (metadata.params.length > 0) {
                             for (metaParam in metadata.params) {
-                                var enumDecl = ToxicHelper.getEnumDecl(metaParam);
+                                var enumDecl = HaxelHelper.getEnumDecl(metaParam);
                                 if (enumDecl != null) {
                                     initBody.push(buildInitBody(field, enumDecl));
                                 } else {
@@ -253,7 +253,7 @@ class ToxicComponentCodeGen {
                         }
                     case ":Handle":
                         for (metaParam in metadata.params) {
-                            var enumDecl = ToxicHelper.getEnumDecl(metaParam);
+                            var enumDecl = HaxelHelper.getEnumDecl(metaParam);
                             if (enumDecl != null) {
                                 var fullEnumName = TypeTools.toString(TEnum(enumDecl.type, []));
                                 var handlersOfType = handlers.get(fullEnumName);
@@ -283,27 +283,27 @@ class ToxicComponentCodeGen {
             }
         }
         var handlers = generateHandlerFields();
-        var toxicFields = [
+        var haxelFields = [
             buildAttachFun(e(EBlock(attachBody))),
             buildInitFun(e(EBlock(initBody))),
             buildDetachFun(e(EBlock(detachBody))),
             buildReleaseFun(e(EBlock(releaseBody)))
         ];
-        if (overrideToxic) {
-            for (toxicField in toxicFields) {
-                toxicField.access.push(AOverride);
+        if (overrideHaxel) {
+            for (haxelField in haxelFields) {
+                haxelField.access.push(AOverride);
             }
         }
-        return fields.concat(handlers).concat(toxicFields);
+        return fields.concat(handlers).concat(haxelFields);
     }
 
     /**
-    * Check whether is the generated class already extends an Toxic component.
+    * Check whether is the generated class already extends an Haxel component.
     **/
-    private function isExtendsToxic():Bool {
+    private function isExtendsHaxel():Bool {
         var classRef = Context.getLocalClass();
-        var iToxicType = ComplexTypeTools.toType(ToxicHelper.tToxic("IToxicComponent"));
-        return ToxicHelper.getGeneration(classRef, iToxicType) > 0;
+        var iHaxelType = ComplexTypeTools.toType(HaxelHelper.tHaxel("IHaxelComponent"));
+        return HaxelHelper.getGeneration(classRef, iHaxelType) > 0;
     }
 
     /**
@@ -353,14 +353,14 @@ class ToxicComponentCodeGen {
     * </code>
     **/
     private function buildHandlerWrapper(body:Expr):Field {
-        var eventArg:FunctionArg = {value: null, type: ToxicHelper.tEnumValue(), opt: false, name: "event"};
-        var initFun:Function = {ret:ToxicHelper.tVoid(), params:[], expr: body, args:[eventArg]};
+        var eventArg:FunctionArg = {value: null, type: HaxelHelper.tEnumValue(), opt: false, name: "event"};
+        var initFun:Function = {ret:HaxelHelper.tVoid(), params:[], expr: body, args:[eventArg]};
         handlerIndex++;
-        return buildToxicFun("h" + handlerIndex, initFun);
+        return buildHaxelFun("h" + handlerIndex, initFun);
     }
 
     /**
-    * Builds a body part of <code>IToxicComponent#attach</code> function to register a handler.
+    * Builds a body part of <code>IHaxelComponent#attach</code> function to register a handler.
     * <code>
     *    accessor.addHandler("events.Turn:PLAYER_TURN", this.handler123);
     * </code>
@@ -377,7 +377,7 @@ class ToxicComponentCodeGen {
     }
 
     /**
-    * Builds a body part of <code>IToxicComponent#detach</code> function to remove a handler.
+    * Builds a body part of <code>IHaxelComponent#detach</code> function to remove a handler.
     * <code>
     *    accessor.removeHandler("events.Turn:PLAYER_TURN", this.handler123);
     * </code>
@@ -394,7 +394,7 @@ class ToxicComponentCodeGen {
     }
 
     /**
-    * Builds a body part of <code>IToxicComponent#attach</code> function to initialize an injection.
+    * Builds a body part of <code>IHaxelComponent#attach</code> function to initialize an injection.
     * <code>
     *     this.dependency = accessor.getInjection("dependency", ANY);
     * </code>
@@ -412,7 +412,7 @@ class ToxicComponentCodeGen {
     }
 
     /**
-    * Builds a body part of <code>IToxicComponent#attach</code> function
+    * Builds a body part of <code>IHaxelComponent#attach</code> function
     * to initialize a current scope dependency.
     *
     * <code>
@@ -429,7 +429,7 @@ class ToxicComponentCodeGen {
     }
 
     /**
-    * Builds a body part of <code>IToxicComponent#attach</code> function
+    * Builds a body part of <code>IHaxelComponent#attach</code> function
     * to initialize a connected scope dependency.
     *
     * <code>
@@ -447,7 +447,7 @@ class ToxicComponentCodeGen {
     }
 
     /**
-    * Builds a body part of <code>IToxicComponent#init</code> function
+    * Builds a body part of <code>IHaxelComponent#init</code> function
     * to initialize a component with a scope key.
     *
     * <code>
@@ -461,7 +461,7 @@ class ToxicComponentCodeGen {
     *
     * @param field    a field represents an initilize function of the component.
     * @param enumDecl an enum declaration descriptor definition.
-    * @return an expression which run an initilizer of a Toxic component.
+    * @return an expression which run an initilizer of a Haxel component.
     **/
     private function buildInitBody(field:Field, enumDecl:EnumDeclarationDef):Expr {
         var enumType = enumDecl.type.get();
@@ -484,7 +484,7 @@ class ToxicComponentCodeGen {
     }
 
     /**
-    * Builds a body part of <code>IToxicComponent#init</code> function
+    * Builds a body part of <code>IHaxelComponent#init</code> function
     * to initialize a component with a dynamic data.
     *
     * <code>
@@ -493,7 +493,7 @@ class ToxicComponentCodeGen {
     *
     * @param field    a field represents an initilize function of the component.
     * @param funDecl  a function declaration to be called.
-    * @return an expression which run an initilizer of a Toxic component.
+    * @return an expression which run an initilizer of a Haxel component.
     **/
     private function buildDynamicInitBody(field:Field, funDecl:Function):Expr {
         var params:Array<Expr> = null;
@@ -505,7 +505,7 @@ class ToxicComponentCodeGen {
     }
 
     /**
-    * Builds a body part of <code>IToxicComponent#handle</code> function
+    * Builds a body part of <code>IHaxelComponent#handle</code> function
     * to initialize a component.
     *
     * <code>

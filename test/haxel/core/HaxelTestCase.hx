@@ -17,7 +17,7 @@ package haxel.core;
 
 import haxe.unit.TestCase;
 
-class ToxicTestCase extends TestCase {
+class HaxelTestCase extends TestCase {
 
     public var scopeManager: ScopeManager;
 

@@ -19,18 +19,18 @@ import haxel.core.impl.Scope;
 import haxel.core.impl.ScopeManagerInternal;
 
 /**
-* Manages scopes inside a Toxic application.
+* Manages scopes inside a Haxel application.
 **/
 class ScopeManager {
     /**
-    * A manager of events  of scopes inside a Toxic application.
+    * A manager of events  of scopes inside a Haxel application.
     **/
     private var internalManager:ScopeManagerInternal;
 
     /**
     * Constructs an instance.
     *
-    * @param config a config of an Toxic application.
+    * @param config a config of an Haxel application.
     **/
     public function new(config:Config) {
         this.internalManager = new ScopeManagerInternal(config);

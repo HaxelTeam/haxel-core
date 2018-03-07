@@ -15,14 +15,14 @@
  */
 package haxel.core.impl;
 
-import haxel.core.macro.ToxicMacro;
+import haxel.core.macro.HaxelMacro;
 
 /**
 * A factory produces a list of components.
 *
 * @author Dmitry Razumovskiy <razumovskiy@gmail.com>
 **/
-class ComponentToxicFactory<T : IToxicComponent> implements IToxicFactory<T> {
+class ComponentHaxelFactory<T : IHaxelComponent> implements IHaxelFactory<T> {
     /**
     * A list of componentes produces by this factory.
     **/
@@ -34,7 +34,7 @@ class ComponentToxicFactory<T : IToxicComponent> implements IToxicFactory<T> {
     private var scopeAccessor:IScopeAccessor;
 
     /**
-    * A class of a Toxic component to build.
+    * A class of a Haxel component to build.
     **/
     private var componentClass:Class<T>;
 
@@ -51,12 +51,12 @@ class ComponentToxicFactory<T : IToxicComponent> implements IToxicFactory<T> {
     }
 
 //-----------------------------------------------------------
-// {@link IToxicFactory} implemeteaion
+// {@link IHaxelFactory} implemeteaion
 //-----------------------------------------------------------
     public function create():T {
         var result:T = Type.createInstance(componentClass, []);
-        ToxicMacro.toxicCall(result.attach(scopeAccessor));
-        ToxicMacro.toxicCall(result.init(scopeAccessor.getCurrent().getScopeKey()));
+        HaxelMacro.haxelCall(result.attach(scopeAccessor));
+        HaxelMacro.haxelCall(result.init(scopeAccessor.getCurrent().getScopeKey()));
         components.add(result);
         return result;
     }
@@ -71,15 +71,15 @@ class ComponentToxicFactory<T : IToxicComponent> implements IToxicFactory<T> {
 
     public function release(component:T):Void {
         if (components.remove(component)) {
-            ToxicMacro.toxicCall(component.detach(scopeAccessor));
-            ToxicMacro.toxicCall(component.release());
+            HaxelMacro.haxelCall(component.detach(scopeAccessor));
+            HaxelMacro.haxelCall(component.release());
         }
     }
 
     public function releaseAll():Void {
         for (component in components) {
-            ToxicMacro.toxicCall(component.detach(scopeAccessor));
-            ToxicMacro.toxicCall(component.release());
+            HaxelMacro.haxelCall(component.detach(scopeAccessor));
+            HaxelMacro.haxelCall(component.release());
         }
         components.clear();
     }

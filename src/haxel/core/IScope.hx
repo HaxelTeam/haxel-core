@@ -16,8 +16,8 @@
 package haxel.core;
 
 /**
-* An independent element of a Toxic aplication.
-* Provides IoC, Dependency Injection, event propagation features for Toxic compontents connected with this scope.
+* An independent element of a Haxel aplication.
+* Provides IoC, Dependency Injection, event propagation features for Haxel compontents connected with this scope.
 *
 * @author Dmitry Razumovskiy <razumovskiy@gmail.com>
 **/
@@ -74,7 +74,7 @@ interface IScope {
     function getScopeKey():EnumValue;
 
     /**
-    * Releases this scope and all Toxic components created with this scope.
+    * Releases this scope and all Haxel components created with this scope.
     **/
     function release():Void;
 

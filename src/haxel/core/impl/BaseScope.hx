@@ -76,12 +76,12 @@ class BaseScope implements IScope implements IScopeAccessor {
     /**
     * A map of injections registered in this scope.
     **/
-    private var injections:Map<String, ToxicInjectionKind>;
+    private var injections:Map<String, HaxelInjectionKind>;
 
     /**
-    * A list of Toxic factories instanciated by this scope.
+    * A list of Haxel factories instanciated by this scope.
     **/
-    private var factories:Array<IToxicFactory<IToxicComponent>>;
+    private var factories:Array<IHaxelFactory<IHaxelComponent>>;
 
     /**
     * Constructs an instance of a base scope.
@@ -103,7 +103,7 @@ class BaseScope implements IScope implements IScopeAccessor {
         listeners = [];
         subscribtions = [];
         delayedNotes = [];
-        injections = new Map<String, ToxicInjectionKind>();
+        injections = new Map<String, HaxelInjectionKind>();
         factories = [];
         if (parent != null) {
             parent.childs.push(this);
@@ -174,7 +174,7 @@ class BaseScope implements IScope implements IScopeAccessor {
                 case VALUE(value):
                     value;
                 case FACTORY(componentClass):
-                    var factory = new ComponentToxicFactory(this, componentClass);
+                    var factory = new ComponentHaxelFactory(this, componentClass);
                     requester.factories.push(factory);
                     factory;
             }
@@ -190,7 +190,7 @@ class BaseScope implements IScope implements IScopeAccessor {
     * @param requester a scope which requests an injection search.
     * @return a found injection or throws an exeption if there is no an injection with specified key.
     **/
-    public function getInjectionForRequester(key:String, criteria:ToxicInjectionCriteria, requester:BaseScope):Null<Dynamic> {
+    public function getInjectionForRequester(key:String, criteria:HaxelInjectionCriteria, requester:BaseScope):Null<Dynamic> {
         switch(criteria) {
             case ANY:
                 var result = getOwnInjectionForRequester(key, requester);
@@ -307,7 +307,7 @@ class BaseScope implements IScope implements IScopeAccessor {
         return getOwnInjectionForRequester(key, this);
     }
 
-    public function getInjection(key:String, selector:ToxicInjectionCriteria):Null<Dynamic> {
+    public function getInjection(key:String, selector:HaxelInjectionCriteria):Null<Dynamic> {
         return getInjectionForRequester(key, selector, this);
     }
 
@@ -351,7 +351,7 @@ class BaseScope implements IScope implements IScopeAccessor {
         }
     }
 
-    public function registerInjection(name:String, injection:ToxicInjectionKind):Void {
+    public function registerInjection(name:String, injection:HaxelInjectionKind):Void {
         injections.set(name, injection);
     }
 //-----------------------------------------------------------------------------
@@ -400,17 +400,17 @@ class BaseScope implements IScope implements IScopeAccessor {
     }
 
     public function subscribe(scope:IScope):Void {
-        var toxicScope:BaseScope = cast scope;
-        if (!hasHeritage(toxicScope) && !Lambda.has(subscribtions, toxicScope)) {
-            toxicScope.listeners.push(this);
-            subscribtions.push(toxicScope);
+        var haxelScope:BaseScope = cast scope;
+        if (!hasHeritage(haxelScope) && !Lambda.has(subscribtions, haxelScope)) {
+            haxelScope.listeners.push(this);
+            subscribtions.push(haxelScope);
         }
     }
 
     public function unsubscribe(scope:IScope):Void {
-        var toxicScope:BaseScope = cast scope;
-        subscribtions.remove(toxicScope);
-        toxicScope.listeners.remove(this);
+        var haxelScope:BaseScope = cast scope;
+        subscribtions.remove(haxelScope);
+        haxelScope.listeners.remove(this);
     }
 
     public function release():Void {

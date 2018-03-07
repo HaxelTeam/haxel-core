@@ -1,5 +1,5 @@
 package haxel.core;
 
-enum ToxicScope {
+enum HaxelScope {
     ROOT;
 }

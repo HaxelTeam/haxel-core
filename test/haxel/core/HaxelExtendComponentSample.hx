@@ -15,7 +15,7 @@
  */
 package haxel.core;
 
-class ToxicExtendComponentSample extends ToxicComponentSample {
+class HaxelExtendComponentSample extends HaxelComponentSample {
 
     public var extendInitPassed:Bool;
 

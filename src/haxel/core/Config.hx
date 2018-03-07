@@ -18,7 +18,7 @@ package haxel.core;
 import Type.ValueType;
 
 /**
-* A Toxic application config.
+* A Haxel application config.
 *
 * @author Dmitry Razumovskiy <razumovskiy@gmail.com>
 **/
@@ -48,12 +48,12 @@ class Config {
     }
 
     /**
-    * Registers a Toxic context by a key.
+    * Registers a Haxel context by a key.
     *
     * @param scopeKey a key of a scope.
     * @param context  a context to register by a key.
     **/
-    public function register(scopeKey:Null<Dynamic>, context:Class<IToxicContext>):Void {
+    public function register(scopeKey:Null<Dynamic>, context:Class<IHaxelContext>):Void {
         var def:ContextDef = {context: context, key: scopeKey};
         switch(Type.typeof(scopeKey)) {
             case TEnum(e):
@@ -70,16 +70,16 @@ class Config {
     }
 
     /**
-    * Resolves Toxic context classes by a key.
+    * Resolves Haxel context classes by a key.
     *
     * @param scopeKey the key of a scope.
-    * @return an array of Toxic context classes.
+    * @return an array of Haxel context classes.
     **/
-    public function getScope(scopeKey:Null<EnumValue>):Null<Array<Class<IToxicContext>>> {
+    public function getScope(scopeKey:Null<EnumValue>):Null<Array<Class<IHaxelContext>>> {
         //TODO use cache
         switch(Type.typeof(scopeKey)) {
             case TEnum(e):
-                var result:Array<Class<IToxicContext>> = [];
+                var result:Array<Class<IHaxelContext>> = [];
                 if (Type.enumParameters(scopeKey).length > 0) {
                     for (def in parameterizedEnumContexts) {
                         if (Type.enumEq(def.key, scopeKey)) {
@@ -118,7 +118,7 @@ typedef ContextDef = {
     /**
     * The class of a context.
     **/
-    var context:Class<IToxicContext>;
+    var context:Class<IHaxelContext>;
 
     /**
     * The key of a scope for the context.

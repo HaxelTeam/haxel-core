@@ -18,28 +18,28 @@ package haxel.core.macro;
 import haxe.macro.ComplexTypeTools;
 import haxe.macro.Context;
 import haxe.macro.Expr;
-import haxel.core.macro.ToxicHelper.e;
+import haxel.core.macro.HaxelHelper.e;
 
 /**
-* The set of flags allowed for a Toxic component configuration in a Toxc context.
+* The set of flags allowed for a Haxel component configuration in a Haxel context.
 *
 * @author Dmitry Razumovskiy <razumovskiy@gmail.com>
 **/
 typedef ComponentConfigFlagsDef = {
     /**
-    * Determines that a Toxic component should be instanciate via an {@link IToxicFactory}.
+    * Determines that a Haxel component should be instanciate via an {@link IHaxelFactory}.
     **/
     var useFactory:Bool;
 }
 
 /**
-* A code generator is used to build implementation of a Toxic context on the macro phase.
+* A code generator is used to build implementation of a Haxel context on the macro phase.
 *
 * @author Dmitry Razumovskiy <razumovskiy@gmail.com>
 **/
-class ToxicContextCodeGen {
+class HaxelContextCodeGen {
     /**
-    * Builds a function which constructs components of a Toxic context. (IToxicComponent#constructsComponents).
+    * Builds a function which constructs components of a Haxel context. (IHaxelComponent#constructsComponents).
     *
     * <code>
     *   function #constructsComponents(accessor: IScopeAccessor);
@@ -49,14 +49,14 @@ class ToxicContextCodeGen {
     * @return a field definition of the function.
     **/
     public static function buildConstructFun(?body:Expr):Field {
-        var scopeType = ToxicHelper.tToxic("IScopeAccessor");
+        var scopeType = HaxelHelper.tHaxel("IScopeAccessor");
         var scopeArg:FunctionArg = {value: null, type: scopeType, opt: false, name: "accessor"};
-        var constructFun:FieldType = FFun({ret:ToxicHelper.tVoid(), params:[], expr: body, args:[scopeArg]});
-        return ToxicHelper.f(ToxicHelper.getToxicName("constructComponents"), constructFun);
+        var constructFun:FieldType = FFun({ret:HaxelHelper.tVoid(), params:[], expr: body, args:[scopeArg]});
+        return HaxelHelper.f(HaxelHelper.getHaxelName("constructComponents"), constructFun);
     }
 
     /**
-    * Builds a function which prepares components of a Toxic context. (IToxicComponent#prepareComponents).
+    * Builds a function which prepares components of a Haxel context. (IHaxelComponent#prepareComponents).
     *
     * <code>
     *   function #prepareComponents(accessor: IScopeAccessor);
@@ -66,14 +66,14 @@ class ToxicContextCodeGen {
     * @return a field definition of the function.
     **/
     public static function buildPrepareFun(?body:Expr):Field {
-        var scopeType = ToxicHelper.tToxic("IScopeAccessor");
+        var scopeType = HaxelHelper.tHaxel("IScopeAccessor");
         var scopeArg:FunctionArg = {value: null, type: scopeType, opt: false, name: "accessor"};
-        var constructFun:FieldType = FFun({ret:ToxicHelper.tVoid(), params:[], expr: body, args:[scopeArg]});
-        return ToxicHelper.f(ToxicHelper.getToxicName("prepareComponents"), constructFun);
+        var constructFun:FieldType = FFun({ret:HaxelHelper.tVoid(), params:[], expr: body, args:[scopeArg]});
+        return HaxelHelper.f(HaxelHelper.getHaxelName("prepareComponents"), constructFun);
     }
 
     /**
-    * Builds a function which initilizes components of a Toxic context. (IToxicComponent#initComponents).
+    * Builds a function which initilizes components of a Haxel context. (IHaxelComponent#initComponents).
     *
     * <code>
     *   function #initComponents(scopeKey: Dynamic);
@@ -83,13 +83,13 @@ class ToxicContextCodeGen {
     * @return a field definition of the function.
     **/
     public static function buildInitFun(?body:Expr):Field {
-        var scopeKeyArgs:FunctionArg = {value: null, type: ToxicHelper.tDynamic(), opt: false, name: "scopeKey"};
-        var initFun:FieldType = FFun({ret:ToxicHelper.tVoid(), params:[], expr: body, args:[scopeKeyArgs]});
-        return ToxicHelper.f(ToxicHelper.getToxicName("initComponents"), initFun);
+        var scopeKeyArgs:FunctionArg = {value: null, type: HaxelHelper.tDynamic(), opt: false, name: "scopeKey"};
+        var initFun:FieldType = FFun({ret:HaxelHelper.tVoid(), params:[], expr: body, args:[scopeKeyArgs]});
+        return HaxelHelper.f(HaxelHelper.getHaxelName("initComponents"), initFun);
     }
 
     /**
-    * Builds a function which releases components of a Toxic context. (IToxicComponent#releaseComponents).
+    * Builds a function which releases components of a Haxel context. (IHaxelComponent#releaseComponents).
     *
     * <code>
     *   function #releaseComponents(scopeKey: Dynamic);
@@ -99,8 +99,8 @@ class ToxicContextCodeGen {
     * @return a field definition of the function.
     **/
     public static function buildReleaseFun(?body:Expr):Field {
-        var releaseFun = FFun({ret:ToxicHelper.tVoid(), params:[], expr: body, args:[]});
-        return ToxicHelper.f(ToxicHelper.getToxicName("releaseComponents"), releaseFun);
+        var releaseFun = FFun({ret:HaxelHelper.tVoid(), params:[], expr: body, args:[]});
+        return HaxelHelper.f(HaxelHelper.getHaxelName("releaseComponents"), releaseFun);
     }
 
     /**
@@ -109,27 +109,27 @@ class ToxicContextCodeGen {
     private static var fieldIndex:Int = 0;
 
     /**
-    * The body of the <code>IToxicContext#constructComponents</code> function.
+    * The body of the <code>IHaxelContext#constructComponents</code> function.
     **/
     private var constructBody:Array<Expr>;
 
     /**
-    * The body of the <code>IToxicContext#prepareComponents</code> function.
+    * The body of the <code>IHaxelContext#prepareComponents</code> function.
     **/
     private var prepareBody:Array<Expr>;
 
     /**
-    * The body of the <code>IToxicContext#initComponents</code> function.
+    * The body of the <code>IHaxelContext#initComponents</code> function.
     **/
     private var initBody:Array<Expr>;
 
     /**
-    * The body of the <code>IToxicContext#releaseComponents</code> function.
+    * The body of the <code>IHaxelContext#releaseComponents</code> function.
     **/
     private var releaseBody:Array<Expr>;
 
     /**
-    * The set of fileds which are keeping instances of the components registerd in the Toxic context.
+    * The set of fileds which are keeping instances of the components registerd in the Haxel context.
     **/
     private var components:Array<Field>;
 
@@ -145,7 +145,7 @@ class ToxicContextCodeGen {
     }
 
     /**
-    * Generates imlementation of the current Toxic context in the macro Context.
+    * Generates imlementation of the current Haxel context in the macro Context.
     **/
     public function generate():Array<Field> {
         var fields = Context.getBuildFields();
@@ -165,7 +165,7 @@ class ToxicContextCodeGen {
     }
 
     /**
-    * Generate bodies of the current Toxic context functions.
+    * Generate bodies of the current Haxel context functions.
     *
     * @param params an array of the config entities declarations.
     **/
@@ -209,7 +209,7 @@ class ToxicContextCodeGen {
     }
 
     /**
-    * Extracts configuration parameters for a Toxic component. The paramters should be filled in key = value form:
+    * Extracts configuration parameters for a Haxel component. The paramters should be filled in key = value form:
     *  MyComponent(someFlag, someFlag)
     *
     **/
@@ -233,10 +233,10 @@ class ToxicContextCodeGen {
     }
 
     /**
-    * Generates expressions which are register a component in the Toxic context.
+    * Generates expressions which are register a component in the Haxel context.
     *
-    * @param className the name of a Toxic component class.
-    * @param pos       a position of the declaration in the Toxic context config.
+    * @param className the name of a Haxel component class.
+    * @param pos       a position of the declaration in the Haxel context config.
     **/
     private function processComponent(className:String, pos:Position):Field {
         var field = buildClassField(className, pos);
@@ -244,8 +244,8 @@ class ToxicContextCodeGen {
         constructBody.push(buildInstantiateExpr(className, field.name, pos));
         switch(Context.getType(className)) {
             case TInst(classType, params):
-                var iToxicInterface = ComplexTypeTools.toType(ToxicHelper.tToxic("IToxicComponent"));
-                if (ToxicHelper.getGeneration(classType, iToxicInterface) != null) {
+                var iHaxelInterface = ComplexTypeTools.toType(HaxelHelper.tHaxel("IHaxelComponent"));
+                if (HaxelHelper.getGeneration(classType, iHaxelInterface) != null) {
                     prepareBody.push(buildPrepareComponentExpr(field, pos));
                     initBody.push(buildInitComponentExpr(field, pos));
                     releaseBody.push(buildReleaseComponentExpr(field, pos));
@@ -256,52 +256,52 @@ class ToxicContextCodeGen {
     }
 
     /**
-    * Builds a part of the IToxicContext#prepareComponents method body.
+    * Builds a part of the IHaxelContext#prepareComponents method body.
     * <code>
     *  this.#c123.attach(scopeAccessor);
     * </code>
     *
     * @param field a field which keeps an instance of a component.
-    * @param pos   a position of the declaration in the Toxic context config.
+    * @param pos   a position of the declaration in the Haxel context config.
     * @return an expresion which calls attach method of a component.
     **/
     private function buildPrepareComponentExpr(field:Field, pos:Position):Expr {
         var varExpr = e(EField(e(EConst(CIdent("this")), pos), field.name), pos);
-        var prepareExpr = e(EField(varExpr, ToxicHelper.getToxicName("attach")), pos);
+        var prepareExpr = e(EField(varExpr, HaxelHelper.getHaxelName("attach")), pos);
         var scopeExpr = e(EConst(CIdent("accessor")));
         return e(ECall(prepareExpr, [scopeExpr]));
     }
 
     /**
-    * Builds a part of the IToxicContext#initComponents method body.
+    * Builds a part of the IHaxelContext#initComponents method body.
     * <code>
     *  this.#c123.init(scopeKey);
     * </code>
     *
     * @param field a field which keeps an instance of a component.
-    * @param pos   a position of the declaration in the Toxic context config.
+    * @param pos   a position of the declaration in the Haxel context config.
     * @return an expresion which calls init method of a component.
     **/
     private function buildInitComponentExpr(field:Field, pos:Position):Expr {
         var varExpr = e(EField(e(EConst(CIdent("this")), pos), field.name), pos);
-        var initExpr = e(EField(varExpr, ToxicHelper.getToxicName("init")), pos);
+        var initExpr = e(EField(varExpr, HaxelHelper.getHaxelName("init")), pos);
         var scopeKeyExpr = e(EConst(CIdent("scopeKey")));
         return e(ECall(initExpr, [scopeKeyExpr]));
     }
 
     /**
-    * Builds a part of the IToxicContext#releaseComponents method body.
+    * Builds a part of the IHaxelContext#releaseComponents method body.
     * <code>
     *  this.#c123.release();
     * </code>
     *
     * @param field a field which keeps an instance of a component.
-    * @param pos   a position of the declaration in the Toxic context config.
+    * @param pos   a position of the declaration in the Haxel context config.
     * @return an expresion which calls release method of a component.
     **/
     private function buildReleaseComponentExpr(field:Field, pos:Position):Expr {
         var varExpr = e(EField(e(EConst(CIdent("this")), pos), field.name), pos);
-        var releaseExpr = e(EField(varExpr, ToxicHelper.getToxicName("release")), pos);
+        var releaseExpr = e(EField(varExpr, HaxelHelper.getHaxelName("release")), pos);
         return e(ECall(releaseExpr, []));
     }
 
@@ -311,9 +311,9 @@ class ToxicContextCodeGen {
     *  private var #c123;
     * </code>
     *
-    * @param className the name of a Toxic component class.
-    * @param pos       a position of the declaration in the Toxic context config.
-    * @return a private field with type of the Toxic instance.
+    * @param className the name of a Haxel component class.
+    * @param pos       a position of the declaration in the Haxel context config.
+    * @return a private field with type of the Haxel instance.
     **/
     private function buildClassField(className:String, pos:Position):Field {
         var noCompletionMeta = {
@@ -322,7 +322,7 @@ class ToxicContextCodeGen {
             pos: pos
         }
         return {pos: pos,
-            name: ToxicHelper.getToxicName("c" + fieldIndex ++),
+            name: HaxelHelper.getHaxelName("c" + fieldIndex ++),
             meta: [noCompletionMeta],
             kind: FVar(Context.toComplexType(Context.getType(className))),
             doc: null,
@@ -336,13 +336,13 @@ class ToxicContextCodeGen {
     *  this.#c123 = new MyComponent();
     * </code>
     *
-    * @param className the name of a Toxic component class.
-    * @param varName   the name of a variable in the Toxic context instance.
-    * @param pos       a position of the declaration in the Toxic context config.
+    * @param className the name of a Haxel component class.
+    * @param varName   the name of a variable in the Haxel context instance.
+    * @param pos       a position of the declaration in the Haxel context config.
     * @return an expression which instantiates a component.
     **/
     private function buildInstantiateExpr(className:String, varName:String, pos:Position):Expr {
-        var newExpr = e(ENew(ToxicHelper.getTypePath(className), []), pos);
+        var newExpr = e(ENew(HaxelHelper.getTypePath(className), []), pos);
         var varExpr = e(EField(e(EConst(CIdent("this")), pos), varName), pos);
         return e(EBinop(OpAssign, varExpr, newExpr));
     }
@@ -353,9 +353,9 @@ class ToxicContextCodeGen {
     *  scope.registerInjection("myComponent", VALUE(this.#c123));
     * </code>
     *
-    * @param name    the name of an injection of a Toxic component.
-    * @param varName the name of a variable in the Toxic context instance.
-    * @param pos     a position of the declaration in the Toxic context config.
+    * @param name    the name of an injection of a Haxel component.
+    * @param varName the name of a variable in the Haxel context instance.
+    * @param pos     a position of the declaration in the Haxel context config.
     * @return an expression which registers a component.
     **/
     private function buildRegisterValueInjectionExpr(injectionName:String, varName:String, pos:Position):Expr {
@@ -372,9 +372,9 @@ class ToxicContextCodeGen {
     *  scope.registerInjection("myComponent", FACTORY(MyComponent));
     * </code>
     *
-    * @param name      the name of an injection of a Toxic component.
+    * @param name      the name of an injection of a Haxel component.
     * @param className the name of a component class which a factory should built.
-    * @param pos       a position of the declaration in the Toxic context config.
+    * @param pos       a position of the declaration in the Haxel context config.
     * @return an expression which registers a component.
     **/
     private function buildRegisterFactoryInjectionExpr(injectionName:String, className:String, pos:Position):Expr {

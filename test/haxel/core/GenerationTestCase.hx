@@ -15,17 +15,17 @@
  */
 package haxel.core;
 
-import haxel.core.ToxicScope;
+import haxel.core.HaxelScope;
 
-class GenerationTestCase extends ToxicTestCase {
+class GenerationTestCase extends HaxelTestCase {
 
     public function testBasic() {
         //GIVEN
-        config.register(ToxicScope.ROOT, ToxicContextSample);
-        var root = scopeManager.createScope(ToxicScope.ROOT);
+        config.register(HaxelScope.ROOT, HaxelContextSample);
+        var root = scopeManager.createScope(HaxelScope.ROOT);
         var accessor: IScopeAccessor = cast root;
-        var sample: ToxicComponentSample = accessor.getOwnInjection("toxicSmaple");
-        var extendSample: ToxicExtendComponentSample = accessor.getOwnInjection("toxicExtendSmaple");
+        var sample: HaxelComponentSample = accessor.getOwnInjection("haxelSmaple");
+        var extendSample: HaxelExtendComponentSample = accessor.getOwnInjection("haxelExtendSmaple");
 
         //WHEN
         root.send(EventSample.SAMPLE);

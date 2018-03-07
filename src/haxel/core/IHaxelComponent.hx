@@ -16,12 +16,12 @@
 package haxel.core;
 
 /**
-* An interface defines the structure of a Toxic component.
+* An interface defines the structure of a Haxel component.
 **/
-@:build(haxel.core.macro.ToxicMacro.buildIToxicComponent())
-@:autoBuild(haxel.core.macro.ToxicMacro.prepareToxicComponent())
+@:build(haxel.core.macro.HaxelMacro.buildIHaxelComponent())
+@:autoBuild(haxel.core.macro.HaxelMacro.prepareHaxelComponent())
 @:coreType
-interface IToxicComponent {
+interface IHaxelComponent {
     /**
     * Makes injections to this component from a scope and registers handlers in the scope.
     *
@@ -34,7 +34,7 @@ interface IToxicComponent {
     * Inits this component.
     *
     * @param initData a data passed to component for context based components it is a value of
-    *  {@link su.per.toxic.impl.IScope#getScopeKey}.
+    *  {@link haxel.core.IScope#getScopeKey}.
     **/
     @:noCompletion
     function init(initData:Dynamic):Void;

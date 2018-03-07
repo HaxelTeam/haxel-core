@@ -16,12 +16,12 @@
 package haxel.core;
 
 /**
-* An interface defines the structure of a Toxic context.
+* An interface defines the structure of a Haxel context.
 **/
-@:build(haxel.core.macro.ToxicMacro.buildIToxicContext())
-@:autoBuild(haxel.core.macro.ToxicMacro.prepareToxicContext())
+@:build(haxel.core.macro.HaxelMacro.buildIHaxelContext())
+@:autoBuild(haxel.core.macro.HaxelMacro.prepareHaxelContext())
 @:coreType
-interface IToxicContext {
+interface IHaxelContext {
     /**
     * Constructs components of the context and registers them in a scope.
     *

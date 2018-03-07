@@ -16,10 +16,10 @@
 package haxel.core;
 
 @:Config({
-    toxicSmaple: ToxicComponentSample,
-    toxicExtendSmaple: ToxicExtendComponentSample
+    haxelSmaple: HaxelComponentSample,
+    haxelExtendSmaple: HaxelExtendComponentSample
 })
-class ToxicContextSample implements IToxicContext {
+class HaxelContextSample implements IHaxelContext {
 
     public function new() {
     }

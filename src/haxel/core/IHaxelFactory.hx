@@ -16,11 +16,11 @@
 package haxel.core;
 
 /**
-* An interface of a factory which produces Toxic components in a scope and manages them.
+* An interface of a factory which produces Haxel components in a scope and manages them.
 *
 * @param <T> the class type of a produced component.
 **/
-interface IToxicFactory<T : IToxicComponent> {
+interface IHaxelFactory<T : IHaxelComponent> {
     /**
     * Creates a components.
     *

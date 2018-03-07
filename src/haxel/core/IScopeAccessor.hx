@@ -18,7 +18,7 @@ package haxel.core;
 /**
 * A enum defines a criteria of an injection search over a scope.
 **/
-enum ToxicInjectionCriteria {
+enum HaxelInjectionCriteria {
     /**
     * Finds injection matched a key in the scope and connected scopes.
     **/
@@ -37,9 +37,9 @@ enum ToxicInjectionCriteria {
 }
 
 /**
-* A enum defines the kind of an injection in a Toxic context.
+* A enum defines the kind of an injection in a Haxel context.
 **/
-enum ToxicInjectionKind {
+enum HaxelInjectionKind {
     /**
     * Defines an injection as an instance of an object.
     *
@@ -58,13 +58,13 @@ enum ToxicInjectionKind {
     /**
     * Defines an injection as factory of components of a given type.
     *
-    * @param componentClass a class name of a Toxic component.
+    * @param componentClass a class name of a Haxel component.
     **/
-    FACTORY(componentClass:Class<IToxicComponent>);
+    FACTORY(componentClass:Class<IHaxelComponent>);
 }
 
 /**
-* An interface which allows to fill and manage a scope via a configurable Toxic context.
+* An interface which allows to fill and manage a scope via a configurable Haxel context.
 **/
 interface IScopeAccessor {
     /**
@@ -84,7 +84,7 @@ interface IScopeAccessor {
     * @return an instance of an found injection if an injection is not found than the method returns null.
     **/
     @:noCompletion
-    function getInjection(key:String, selector:ToxicInjectionCriteria):Null<Dynamic>;
+    function getInjection(key:String, selector:HaxelInjectionCriteria):Null<Dynamic>;
 
     /**
     * Gets an instance of an connected scope.
@@ -126,5 +126,5 @@ interface IScopeAccessor {
     * @param injection the kind of an injection.
     **/
     @:noCompletion
-    function registerInjection(key:String, injection:ToxicInjectionKind):Void;
+    function registerInjection(key:String, injection:HaxelInjectionKind):Void;
 }
