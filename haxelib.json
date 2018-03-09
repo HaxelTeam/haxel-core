@@ -1,0 +1,9 @@
+{
+  "name": "haxel-core",
+  "license": "Apache",
+  "tags": ["haxel", "ioc"],
+  "description": "Haxel is a Haxe library for composing asynchronous and event-based applications. It also includes a dependency injection.",
+  "contributors": ["HaxelTeam"],
+  "version": "1.0.0",
+  "url": "https://github.com/HaxelTeam/haxel-core"
+}
