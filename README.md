@@ -1,4 +1,6 @@
-# Haxel a Haxe event-based framework.
+# Haxel is a Haxe event-based framework.
+
+[Travis-CI](https://travis-ci.org/HaxelTeam/haxel-core) :: ![Travis-CI status](https://travis-ci.org/HaxelTeam/haxel-core.svg?branch=master)
 
 Haxel is a Haxe library for composing asynchronous and event-based applications.
 It also includes a dependency injection.
