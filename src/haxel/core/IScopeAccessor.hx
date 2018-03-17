@@ -61,6 +61,13 @@ enum HaxelInjectionKind {
     * @param componentClass a class name of a Haxel component.
     **/
     FACTORY(componentClass:Class<IHaxelComponent>);
+
+    /**
+    * Defines an injection as instance creator for each inject request of a component of a given type.
+    *
+    * @param componentClass a class name of a Haxel component.
+    **/
+    INSTANCE(componentClass:Class<IHaxelComponent>);
 }
 
 /**

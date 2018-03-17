@@ -15,14 +15,10 @@
  */
 package haxel.core;
 
-@:Config({
-    haxelSmaple: HaxelComponentSample,
-    haxelExtendSmaple: HaxelExtendComponentSample,
-    factorySample: HaxelComponentFactoryItemSample(useFactory),
-    instanceSample: HaxelComponentInstanceSample(instance)
-})
-class HaxelContextSample implements IHaxelContext {
+class HaxelComponentInstanceSample extends ThirdPartySample implements IHaxelComponent {
 
     public function new() {
+        super();
+        trace("buildInstanceSample");
     }
 }

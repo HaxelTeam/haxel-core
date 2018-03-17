@@ -177,6 +177,10 @@ class BaseScope implements IScope implements IScopeAccessor {
                     var factory = new ComponentHaxelFactory(this, componentClass);
                     requester.factories.push(factory);
                     factory;
+                case INSTANCE(componentClass):
+                    var factory = new ComponentHaxelFactory(this, componentClass);
+                    requester.factories.push(factory);
+                    factory.create();
             }
         }
         return null;
@@ -401,7 +405,10 @@ class BaseScope implements IScope implements IScopeAccessor {
 
     public function subscribe(scope:IScope):Void {
         var haxelScope:BaseScope = cast scope;
-        if (!hasHeritage(haxelScope) && !Lambda.has(subscribtions, haxelScope)) {
+        if (!released
+        && !haxelScope.released
+        && !hasHeritage(haxelScope)
+        && !Lambda.has(subscribtions, haxelScope)) {
             haxelScope.listeners.push(this);
             subscribtions.push(haxelScope);
         }

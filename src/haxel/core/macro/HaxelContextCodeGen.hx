@@ -30,6 +30,10 @@ typedef ComponentConfigFlagsDef = {
     * Determines that a Haxel component should be instanciate via an {@link IHaxelFactory}.
     **/
     var useFactory:Bool;
+    /**
+    * Determines that a Haxel component should be instanciate on each injection.
+    **/
+    var instance:Bool;
 }
 
 /**
@@ -189,6 +193,10 @@ class HaxelContextCodeGen {
                                             constructBody.push(
                                                 buildRegisterFactoryInjectionExpr(
                                                     injection.field, className, param.pos));
+                                        } else if (flags.instance) {
+                                            constructBody.push(
+                                                buildRegisterInstanceInjectionExpr(
+                                                    injection.field, className, param.pos));
                                         } else {
                                             var field = processComponent(className, injection.expr.pos);
                                             constructBody.push(
@@ -215,7 +223,8 @@ class HaxelContextCodeGen {
     **/
     private function extractFlags(callParams:Array<Expr>):ComponentConfigFlagsDef {
         var flags = {
-            useFactory: false
+            useFactory: false,
+            instance: false
         };
         for (param in callParams) {
             switch(param.expr) {
@@ -380,6 +389,24 @@ class HaxelContextCodeGen {
     private function buildRegisterFactoryInjectionExpr(injectionName:String, className:String, pos:Position):Expr {
         var classExpr = e(EConst(CIdent(className)), pos);
         var kindExpr = e(ECall(e(EConst(CIdent("FACTORY")), pos), [classExpr]), pos);
+        var registerFunExpr = e(EField(e(EConst(CIdent("accessor")), pos), "registerInjection"), pos);
+        return e(ECall(registerFunExpr, [e(EConst(CString(injectionName))), kindExpr]));
+    }
+
+    /**
+    * Builds an expression which registers a instanciator of components in a scope.
+    * <code>
+    *  scope.registerInjection("myComponent", INSTANCE(MyComponent));
+    * </code>
+    *
+    * @param name      the name of an injection of a Haxel component.
+    * @param className the name of a component class which should be instanciate on each injection.
+    * @param pos       a position of the declaration in the Haxel context config.
+    * @return an expression which registers a component.
+    **/
+    private function buildRegisterInstanceInjectionExpr(injectionName:String, className:String, pos:Position):Expr {
+        var classExpr = e(EConst(CIdent(className)), pos);
+        var kindExpr = e(ECall(e(EConst(CIdent("INSTANCE")), pos), [classExpr]), pos);
         var registerFunExpr = e(EField(e(EConst(CIdent("accessor")), pos), "registerInjection"), pos);
         return e(ECall(registerFunExpr, [e(EConst(CString(injectionName))), kindExpr]));
     }

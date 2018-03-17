@@ -15,6 +15,7 @@
  */
 package haxel.core;
 
+import haxel.core.IHaxelFactory;
 class HaxelExtendComponentSample extends HaxelComponentSample {
 
     public var extendInitPassed:Bool;
@@ -22,6 +23,12 @@ class HaxelExtendComponentSample extends HaxelComponentSample {
     public var extendReleasePassed:Bool;
 
     public var extendHandlePassed:Bool;
+
+    @:Inject
+    private var instanceSample: HaxelComponentInstanceSample;
+
+    @:Inject
+    private var factorySample: IHaxelFactory<HaxelComponentFactoryItemSample>;
 
     public function new() {
         super();
@@ -32,6 +39,7 @@ class HaxelExtendComponentSample extends HaxelComponentSample {
     public function extendInitSample(): Void {
         extendInitPassed = true;
         trace("extendInitPassed");
+        factorySample.create();
     }
 
     @:Release
