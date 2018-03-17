@@ -19,7 +19,7 @@ package haxel.core;
     haxelSmaple: HaxelComponentSample,
     haxelExtendSmaple: HaxelExtendComponentSample,
     factorySample: HaxelComponentFactoryItemSample(useFactory),
-    instanceSample: HaxelComponentInstanceSample(instance)
+    instanceSample: HaxelComponentInstanceSample(newInstance)
 })
 class HaxelContextSample implements IHaxelContext {
 

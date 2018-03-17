@@ -67,7 +67,7 @@ enum HaxelInjectionKind {
     *
     * @param componentClass a class name of a Haxel component.
     **/
-    INSTANCE(componentClass:Class<IHaxelComponent>);
+    NEW_INSTANCE(componentClass:Class<IHaxelComponent>);
 }
 
 /**

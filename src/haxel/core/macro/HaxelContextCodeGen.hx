@@ -33,7 +33,7 @@ typedef ComponentConfigFlagsDef = {
     /**
     * Determines that a Haxel component should be instanciate on each injection.
     **/
-    var instance:Bool;
+    var newInstance:Bool;
 }
 
 /**
@@ -193,7 +193,7 @@ class HaxelContextCodeGen {
                                             constructBody.push(
                                                 buildRegisterFactoryInjectionExpr(
                                                     injection.field, className, param.pos));
-                                        } else if (flags.instance) {
+                                        } else if (flags.newInstance) {
                                             constructBody.push(
                                                 buildRegisterInstanceInjectionExpr(
                                                     injection.field, className, param.pos));
@@ -224,7 +224,7 @@ class HaxelContextCodeGen {
     private function extractFlags(callParams:Array<Expr>):ComponentConfigFlagsDef {
         var flags = {
             useFactory: false,
-            instance: false
+            newInstance: false
         };
         for (param in callParams) {
             switch(param.expr) {
@@ -406,7 +406,7 @@ class HaxelContextCodeGen {
     **/
     private function buildRegisterInstanceInjectionExpr(injectionName:String, className:String, pos:Position):Expr {
         var classExpr = e(EConst(CIdent(className)), pos);
-        var kindExpr = e(ECall(e(EConst(CIdent("INSTANCE")), pos), [classExpr]), pos);
+        var kindExpr = e(ECall(e(EConst(CIdent("NEW_INSTANCE")), pos), [classExpr]), pos);
         var registerFunExpr = e(EField(e(EConst(CIdent("accessor")), pos), "registerInjection"), pos);
         return e(ECall(registerFunExpr, [e(EConst(CString(injectionName))), kindExpr]));
     }

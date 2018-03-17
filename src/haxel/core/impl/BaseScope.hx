@@ -177,7 +177,7 @@ class BaseScope implements IScope implements IScopeAccessor {
                     var factory = new ComponentHaxelFactory(this, componentClass);
                     requester.factories.push(factory);
                     factory;
-                case INSTANCE(componentClass):
+                case NEW_INSTANCE(componentClass):
                     var factory = new ComponentHaxelFactory(this, componentClass);
                     requester.factories.push(factory);
                     factory.create();
