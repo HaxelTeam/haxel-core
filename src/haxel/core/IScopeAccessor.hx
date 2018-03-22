@@ -60,14 +60,28 @@ enum HaxelInjectionKind {
     *
     * @param componentClass a class name of a Haxel component.
     **/
-    FACTORY(componentClass:Class<IHaxelComponent>);
+    FACTORY(componentClass:Class<IHaxelComponent>, ?autoBuildType:Null<HaxelFactoryAutoBuildType>);
+}
+
+/**
+* An enum defines a way how to build an dynamic Haxel Component from a Haxel factory.
+**/
+enum HaxelFactoryAutoBuildType {
+    /**
+    * The default behavior when a developer call a factory to build its components.
+    **/
+    NONE;
 
     /**
-    * Defines an injection as instance creator for each inject request of a component of a given type.
-    *
-    * @param componentClass a class name of a Haxel component.
+    * The behavior when a component created when a scope requests it in first time.
+    * Then the scope reuse this instance for other injections.
     **/
-    NEW_INSTANCE(componentClass:Class<IHaxelComponent>);
+    SCOPE;
+
+    /**
+    * The behavior when a component created on each injection.
+    **/
+    INJECTION;
 }
 
 /**

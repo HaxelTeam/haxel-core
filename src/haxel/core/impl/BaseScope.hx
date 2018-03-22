@@ -173,14 +173,19 @@ class BaseScope implements IScope implements IScopeAccessor {
                     getInjection(target, ANY);
                 case VALUE(value):
                     value;
-                case FACTORY(componentClass):
+                case FACTORY(componentClass, autoBuildType):
                     var factory = new ComponentHaxelFactory(this, componentClass);
                     requester.factories.push(factory);
-                    factory;
-                case NEW_INSTANCE(componentClass):
-                    var factory = new ComponentHaxelFactory(this, componentClass);
-                    requester.factories.push(factory);
-                    factory.create();
+                    switch(autoBuildType) {
+                        case NONE:
+                            factory;
+                        case SCOPE:
+                            var instance = factory.create();
+                            requester.registerInjection(key, HaxelInjectionKind.VALUE(instance));
+                            instance;
+                        case INJECTION:
+                            factory.create();
+                    }
             }
         }
         return null;

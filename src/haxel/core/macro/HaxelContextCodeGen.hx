@@ -34,6 +34,10 @@ typedef ComponentConfigFlagsDef = {
     * Determines that a Haxel component should be instanciate on each injection.
     **/
     var newInstance:Bool;
+    /**
+    * Determines that a Haxel component should be instanciate in each requested scope.
+    **/
+    var scopeInstance:Bool;
 }
 
 /**
@@ -190,13 +194,15 @@ class HaxelContextCodeGen {
                                     case EConst(CIdent(className)):
                                         var flags = extractFlags(callParams);
                                         if (flags.useFactory) {
+                                            var autoBuildType = "NONE";
+                                            if (flags.newInstance) {
+                                                autoBuildType = "INJECTION";
+                                            } else if (flags.scopeInstance) {
+                                                autoBuildType = "SCOPE";
+                                            }
                                             constructBody.push(
                                                 buildRegisterFactoryInjectionExpr(
-                                                    injection.field, className, param.pos));
-                                        } else if (flags.newInstance) {
-                                            constructBody.push(
-                                                buildRegisterInstanceInjectionExpr(
-                                                    injection.field, className, param.pos));
+                                                    injection.field, className, autoBuildType, param.pos));
                                         } else {
                                             var field = processComponent(className, injection.expr.pos);
                                             constructBody.push(
@@ -224,7 +230,8 @@ class HaxelContextCodeGen {
     private function extractFlags(callParams:Array<Expr>):ComponentConfigFlagsDef {
         var flags = {
             useFactory: false,
-            newInstance: false
+            newInstance: false,
+            scopeInstance: false,
         };
         for (param in callParams) {
             switch(param.expr) {
@@ -378,7 +385,7 @@ class HaxelContextCodeGen {
     /**
     * Builds an expression which registers a factory of components in a scope.
     * <code>
-    *  scope.registerInjection("myComponent", FACTORY(MyComponent));
+    *  scope.registerInjection("myComponent", FACTORY(MyComponent, NONE));
     * </code>
     *
     * @param name      the name of an injection of a Haxel component.
@@ -386,27 +393,10 @@ class HaxelContextCodeGen {
     * @param pos       a position of the declaration in the Haxel context config.
     * @return an expression which registers a component.
     **/
-    private function buildRegisterFactoryInjectionExpr(injectionName:String, className:String, pos:Position):Expr {
+    private function buildRegisterFactoryInjectionExpr(injectionName:String, className:String, autoBuildType:String, pos:Position):Expr {
         var classExpr = e(EConst(CIdent(className)), pos);
-        var kindExpr = e(ECall(e(EConst(CIdent("FACTORY")), pos), [classExpr]), pos);
-        var registerFunExpr = e(EField(e(EConst(CIdent("accessor")), pos), "registerInjection"), pos);
-        return e(ECall(registerFunExpr, [e(EConst(CString(injectionName))), kindExpr]));
-    }
-
-    /**
-    * Builds an expression which registers a instanciator of components in a scope.
-    * <code>
-    *  scope.registerInjection("myComponent", INSTANCE(MyComponent));
-    * </code>
-    *
-    * @param name      the name of an injection of a Haxel component.
-    * @param className the name of a component class which should be instanciate on each injection.
-    * @param pos       a position of the declaration in the Haxel context config.
-    * @return an expression which registers a component.
-    **/
-    private function buildRegisterInstanceInjectionExpr(injectionName:String, className:String, pos:Position):Expr {
-        var classExpr = e(EConst(CIdent(className)), pos);
-        var kindExpr = e(ECall(e(EConst(CIdent("NEW_INSTANCE")), pos), [classExpr]), pos);
+        var autoBuildTypeExpr = e(EConst(CIdent(autoBuildType)), pos);
+        var kindExpr = e(ECall(e(EConst(CIdent("FACTORY")), pos), [classExpr, autoBuildTypeExpr]), pos);
         var registerFunExpr = e(EField(e(EConst(CIdent("accessor")), pos), "registerInjection"), pos);
         return e(ECall(registerFunExpr, [e(EConst(CString(injectionName))), kindExpr]));
     }
